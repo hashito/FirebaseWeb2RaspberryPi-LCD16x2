@@ -10,17 +10,6 @@ char_max=16
 firebase_admin.initialize_app(credentials.Certificate('/home/pi/fkey.json'))
 db = firestore.client()
 
-def rolling_string(str,line):
-    str_len=len(str)
-    if(str_len<=char_max):
-        i2clcda.lcd_string(str,line)
-        time.sleep(1)
-        return
-
-    for i in range(str_len - char_max):
-        i2clcda.lcd_string(str[i:],line)
-        time.sleep(0.2)
-
 def on_snapshot(doc_snapshot, changes, read_time):
     global vtext
     for doc in doc_snapshot:
@@ -29,8 +18,8 @@ def on_snapshot(doc_snapshot, changes, read_time):
 
 doc_ref = db.collection(u'datas').document(u'text')
 doc_watch = doc_ref.on_snapshot(on_snapshot)
-
+i2clcda.lcd_init()
 while True:
     time.sleep(1)
     print(vtext)
-    rolling_string(vtext,i2clcda.LCD_LINE_1)
+    i2clcda.lcd_string(vtext,i2clcda.LCD_LINE_1)
